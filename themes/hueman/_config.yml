@@ -3,7 +3,12 @@ menu:
     Home: /
     # Delete this row if you don't want categories in your header nav bar
     Categories:
-    # About: /about/index.html
+      webdev: Web开发
+      mobdev: 移动开发
+      nodejs: Node.js
+      tool: 工具&平台
+      trans: 优秀译文
+      # About: /about/index.html
 
 # Customize
 customize:
