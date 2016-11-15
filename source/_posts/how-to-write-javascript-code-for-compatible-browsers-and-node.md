@@ -1,5 +1,5 @@
 title: 如何写兼容浏览器和Node.js环境的Javascript代码
-date: date: 2016-11-08 12:21:20
+date: 2016-11-08 12:21:20
 categories: Web开发
 author: 林志斌
 ---
