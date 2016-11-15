@@ -1,5 +1,6 @@
 title: 如何写兼容浏览器和Node.js环境的Javascript代码
 categories: Web开发
+author: 林志斌
 ---
 
 如果有打开过jQuery的源码（从1.11及以后），或者Vue.js、React.js的源码，都会在文件的前面看见这样一段代码：

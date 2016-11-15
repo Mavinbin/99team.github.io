@@ -50,7 +50,7 @@
                 line-height: 19px
                 position: absolute
                 display: inline-block
-                background-color: #82b965
+                background-color: color-theme
                 &:before
                     top: 3px
                     left: -16px
@@ -58,7 +58,7 @@
                     position: absolute
                     display: inline-block
                     border: 9px solid transparent
-                    border-right-color: #82b965
+                    border-right-color: color-theme
             .thumbnail-image
                 display: block
                 position: absolute
@@ -115,6 +115,13 @@
     transition: color 0.2s
     margin-bottom: 10px
     a&:hover
+        color: color-theme
+.article-subtitle
+    color: #666
+    span
+        color: color-theme
+        padding: 0 5px
+    a
         color: color-theme
 
 .article-date,
