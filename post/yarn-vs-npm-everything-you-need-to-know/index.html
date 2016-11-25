@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Yarn vs npm: 你需要知道的一切 | 99Team</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="" />
+    
+    <meta name="description" content="Yarn 是 Facebook, Google, Exponent 和 Tilde 开发的一款新的 JavaScript 包管理工具。就像我们可以从官方文档了解那样，它的目的是解决这些团队使用 npm 面临的少数问题，即：
+
+安装的时候无法保证速度/一致性
+安全问题，因为 npm 安装时允许运行代码
+
+但请不要惊慌！它并没有试图完全取代 npm。Yarn 同样是一个从 npm 注册源获取模块的新的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Yarn vs npm: 你需要知道的一切">
+<meta property="og:url" content="https://99team.github.io/post/yarn-vs-npm-everything-you-need-to-know/index.html">
+<meta property="og:site_name" content="99Team">
+<meta property="og:description" content="Yarn 是 Facebook, Google, Exponent 和 Tilde 开发的一款新的 JavaScript 包管理工具。就像我们可以从官方文档了解那样，它的目的是解决这些团队使用 npm 面临的少数问题，即：
+
+安装的时候无法保证速度/一致性
+安全问题，因为 npm 安装时允许运行代码
+
+但请不要惊慌！它并没有试图完全取代 npm。Yarn 同样是一个从 npm 注册源获取模块的新的">
+<meta property="og:image" content="https://99team.github.io/post/yarn-vs-npm-everything-you-need-to-know/yarn.jpg">
+<meta property="og:updated_time" content="2016-11-25T09:39:22.240Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Yarn vs npm: 你需要知道的一切">
+<meta name="twitter:description" content="Yarn 是 Facebook, Google, Exponent 和 Tilde 开发的一款新的 JavaScript 包管理工具。就像我们可以从官方文档了解那样，它的目的是解决这些团队使用 npm 面临的少数问题，即：
+
+安装的时候无法保证速度/一致性
+安全问题，因为 npm 安装时允许运行代码
+
+但请不要惊慌！它并没有试图完全取代 npm。Yarn 同样是一个从 npm 注册源获取模块的新的">
+<meta name="twitter:image" content="https://99team.github.io/post/yarn-vs-npm-everything-you-need-to-know/yarn.jpg">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="99Team" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.0.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?cb9af96e6e2fed8bd03189163e3a47b5";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">99Team</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首页</a>
+                                </li>
+                            
+                                        <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/web开发/">Web开发</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/优秀译文/">优秀译文</a></li></ul>
+                                    
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/优秀译文/">优秀译文</a>
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-yarn-vs-npm-everything-you-need-to-know" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Yarn vs npm: 你需要知道的一切
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-subtitle">
+                本文由<span>米粒</span>发表于 
+                <a href="/post/yarn-vs-npm-everything-you-need-to-know/" class="article-date">
+    <time datetime="2016-10-24T11:42:38.000Z" itemprop="datePublished">2016-10-24</time>
+</a>
+                
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            <p>Yarn 是 Facebook, Google, Exponent 和 Tilde 开发的一款新的 JavaScript 包管理工具。就像我们可以从<a href="https://code.facebook.com/posts/1840075619545360" target="_blank" rel="external">官方文档</a>了解那样，它的目的是解决这些团队使用 npm 面临的少数问题，即：</p>
+<ul>
+<li>安装的时候无法保证速度/一致性</li>
+<li>安全问题，因为 npm 安装时允许运行代码</li>
+</ul>
+<p>但请不要惊慌！它并没有试图完全取代 npm。Yarn 同样是一个从 npm 注册源获取模块的新的 CLI 客户端。注册的方式不会有任何变化 —— 你同样可以正常获取与发布包。</p>
+<p>是否每个人现在都要跳上 Yarn 这辆被大肆宣传的列车？又或者你根本没机会碰到 npm 的这些问题。本篇文章将会比较 npm 与 Yarn，最终你可以决定哪款更适合你。</p>
+<img src="/post/yarn-vs-npm-everything-you-need-to-know/yarn.jpg" alt="Yarn logo" title="Yarn logo">
+<h2 id="Yarn-vs-npm-功能差异"><a href="#Yarn-vs-npm-功能差异" class="headerlink" title="Yarn vs npm: 功能差异"></a>Yarn vs npm: 功能差异</h2><p>乍一看 Yarn 与 npm 很类似，但通过引擎的对比就能察觉 Yarn 的不同。</p>
+<h3 id="yarn-lock-文件"><a href="#yarn-lock-文件" class="headerlink" title="yarn.lock 文件"></a>yarn.lock 文件</h3><p>npm 和 Yarn 都使用 <code>package.json</code> 来跟踪项目的依赖，版本号并非一直准确，因为你可以定义版本号范围，这样你可以选择一个主版本和次要版本的包，但让 npm 安装最新的补丁也许可以修改一些 bug。</p>
+<p>理想状态下使用<a href="http://semver.org/" target="_blank" rel="external">语义化版本</a>发布补丁不会包含大的变化，但不幸的是这必非真理。npm 的这种策略可能导致两台拥有相同 <code>package.json</code> 文件的机子安装了不同版本的包，这可能导致一些错误。</p>
+<p>为了避免包版本的错误匹配，一个确定的安装版本被固定在一个锁文件中。每次模块被添加时，Yarn 就会创建（或更新）<code>yarn.lock</code> 文件，这样你就可以保证其它机子也安装相同版本的包，同时包含了 <code>package.json</code> 中定义的一系列允许的版本。</p>
+<p>在 npm 中同样可以使用 <code>npm shrinkwrap</code> 命令来生成一个锁文件，这样在使用 <code>npm install</code> 时会在读取 <code>package.json</code> 前先读取这个文件，就像 Yarn 会先读取 <code>yarn.lock</code> 一样。这里的区别是 Yarn 总会自动更新 <code>yarn.lock</code>，而 npm 需要你重新操作。</p>
+<ol>
+<li><p><a href="https://yarnpkg.com/en/docs/configuration#toc-use-yarn-lock-to-pin-your-dependencies" target="_blank" rel="external">yarn.lock 文档</a></p>
+</li>
+<li><p><a href="https://docs.npmjs.com/cli/shrinkwrap" target="_blank" rel="external">npm shrinkwrap 文档</a></p>
+</li>
+</ol>
+<h3 id="并行安装"><a href="#并行安装" class="headerlink" title="并行安装"></a>并行安装</h3><p>每当 npm 或 Yarn 需要安装一个包时，它会进行一系列的任务。在 npm 中这些任务是按包的顺序一个个执行，这意味着必须等待上一个包被完整安装才会进入下一个；Yarn 则并行的执行这些任务，提高了性能。</p>
+<p>为了比较，我在没有使用 shrinkwrap/yarn.lock 的方式以及清理了缓存下使用 npm 与 Yarn 安装 <a href="https://www.npmjs.com/package/express" target="_blank" rel="external">express</a>，总共安装了 42 个依赖。</p>
+<ul>
+<li>npm: 9 s</li>
+<li>Yarn: 1.37 s</li>
+</ul>
+<p>我无法相信自己的眼睛，所以重复以上步骤，但得到相同结果。接着我安装 <a href="https://www.npmjs.com/package/gulp" target="_blank" rel="external">gulp</a> 进行测试，总共安装了 195 个依赖。</p>
+<ul>
+<li>npm: 11 s</li>
+<li>Yarn: 7.81 s</li>
+</ul>
+<p>似乎根据所需要安装的包的数量而有所不同，但 Yarn 依旧比较快。</p>
+<h3 id="清晰的输出"><a href="#清晰的输出" class="headerlink" title="清晰的输出"></a>清晰的输出</h3><p>npm 默认情况下非常冗余，例如使用 <code>npm install</code> 时它会递归列出所有安装的信息；而 Yarn 则一点也不冗余，当可以使用其它命令时，它适当的使用 emojis 表情来减少信息（Windows 除外）。</p>
+<img src="/post/yarn-vs-npm-everything-you-need-to-know/terminal.png" alt="Yarn vs npm: “yarn install” 命令输出截图" title="Yarn vs npm: “yarn install” 命令输出截图">
+<h2 id="Yarn-vs-npm-CLI-的差异"><a href="#Yarn-vs-npm-CLI-的差异" class="headerlink" title="Yarn vs npm: CLI 的差异"></a>Yarn vs npm: CLI 的差异</h2><p>除了一些功能差异，Yarn 命令也存在一些区别。例如移除或修改了一些 npm 命令以及添加了几个有趣的命令。</p>
+<h3 id="yarn-global"><a href="#yarn-global" class="headerlink" title="yarn global"></a>yarn global</h3><p>不像 npm 添加 <code>-g</code> 或 <code>--global</code> 可以进行全局安装，Yarn 使用的是 <code>global</code> 前缀。不过与 npm 类似，项目依赖不推荐全局安装。</p>
+<p><code>global</code> 前缀只能用于 <code>yarn add</code>, <code>yarn bin</code>, <code>yarn ls</code> 和 <code>yarn remove</code>，除 <code>yarn add</code> 外，这些命令都和 npm 等效。</p>
+<ol>
+<li><a href="https://yarnpkg.com/en/docs/cli/global" target="_blank" rel="external">yarn global 文档</a></li>
+</ol>
+<h3 id="yarn-install"><a href="#yarn-install" class="headerlink" title="yarn install"></a>yarn install</h3><p><code>npm install</code> 命令会根据 <code>package.json</code> 安装依赖以及允许你添加新的模块；<code>yarn install</code> 仅会按 <code>yarn.lock</code> 或 <code>package.json</code> 里面的依赖顺序来安装模块。</p>
+<ol>
+<li><p><a href="https://yarnpkg.com/en/docs/cli/install" target="_blank" rel="external">yarn install 文档</a></p>
+</li>
+<li><p><a href="https://docs.npmjs.com/cli/install" target="_blank" rel="external">npm install 文档</a></p>
+</li>
+</ol>
+<h3 id="yarn-add-–dev"><a href="#yarn-add-–dev" class="headerlink" title="yarn add  [–dev]"></a>yarn add  [–dev]</h3><p>与 <code>npm install</code> 类似，<code>yarn add</code> 允许你添加与安装模块，就像命令的名称一样，添加依赖意味着也会算定将依赖写入 <code>package.json</code>，类似 npm 的 <code>--save</code> 参数；Yarn 的 <code>--dev</code> 参数则是添加开发依赖，类似 npm 的 <code>--save-dev</code> 参数。</p>
+<ol>
+<li><p><a href="https://yarnpkg.com/en/docs/cli/add" target="_blank" rel="external">yarn add 文档</a></p>
+</li>
+<li><p><a href="https://docs.npmjs.com/cli/install" target="_blank" rel="external">npm install 文档</a></p>
+</li>
+</ol>
+<h3 id="yarn-licenses-ls-generate-disclaimer"><a href="#yarn-licenses-ls-generate-disclaimer" class="headerlink" title="yarn licenses [ls|generate-disclaimer]"></a>yarn licenses [ls|generate-disclaimer]</h3><p>npm 没有类似命令来方便编写自己的包。<code>yarn licenses ls</code> 列出所有已安装包的许可协议。<code>yarn licenses generate-disclaimer</code> 生成包含已安装包许可协议的免责声明。某些协议要求使用者必须在项目中包含该协议，这时候该命令将变得非常好用。</p>
+<ol>
+<li><a href="https://yarnpkg.com/en/docs/cli/licenses" target="_blank" rel="external">yarn licenses 文档</a></li>
+</ol>
+<h3 id="yarn-why"><a href="#yarn-why" class="headerlink" title="yarn why"></a>yarn why</h3><p>该命令会查找依赖关系并找出为什么会将某些包安装在你的项目中。也许你明确为什么添加，也许它只是你安装包中的一个依赖，<code>yarn why</code> 可以帮你弄找出。</p>
+<ol>
+<li><a href="https://yarnpkg.com/en/docs/cli/why" target="_blank" rel="external">yarn why 文档</a></li>
+</ol>
+<h3 id="yarn-upgrade"><a href="#yarn-upgrade" class="headerlink" title="yarn upgrade"></a>yarn upgrade</h3><p>该命令会根据符合 <code>package.json</code> 设定的规则而不是 <code>yarn.lock</code> 定义的确切版本来将包更新到最新版本。如果想用 npm 来实现相同目的，可以这样执行：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">rm -rf node_modules</div><div class="line">npm install</div></pre></td></tr></table></figure>
+<p>不要将该命令与 <code>npm update</code> 混淆，它指的是更新到自己的最新版。</p>
+<ol>
+<li><a href="https://yarnpkg.com/en/docs/cli/upgrade" target="_blank" rel="external">yarn upgrade 文档</a></li>
+</ol>
+<h3 id="yarn-generate-lock-entry"><a href="#yarn-generate-lock-entry" class="headerlink" title="yarn generate-lock-entry"></a>yarn generate-lock-entry</h3><p><code>yarn generate-lock-entry</code> 会基于 <code>package.json</code> 设置的依赖生成 <code>yarn.lock</code> 文件，该命令与 <code>npm shrinkwrap</code> 类似，但应该小心使用，因为通过 <code>yarn add</code> 和 <code>yarn upgrade</code> 命令添加或更新依赖时会自动更新生成该锁文件。</p>
+<ol>
+<li><p><a href="https://yarnpkg.com/en/docs/cli/generate-lock-entry" target="_blank" rel="external">yarn generate-lock-entry 文档</a></p>
+</li>
+<li><p><a href="https://docs.npmjs.com/cli/shrinkwrap" target="_blank" rel="external">npm shrinkwrap 文档</a></p>
+</li>
+</ol>
+<h2 id="稳定性与可靠性"><a href="#稳定性与可靠性" class="headerlink" title="稳定性与可靠性"></a>稳定性与可靠性</h2><p>Yarn 被炒得这么火热会不会有问题？它正式发布当天就收到很多<a href="https://github.com/yarnpkg/yarn/issues" target="_blank" rel="external">问题反馈</a>，但官方处理问题的速度极快。这些表明社区正努力开发并修复bug。查看问题反馈的数量和类型可以发现 Yarn 在大多数用户的机子上表现的很稳定，但可能个别机子会有问题。</p>
+<p>请注意虽然一个包管理器可能对你的项目非常重要，但它仅仅只是个工具，如果出了状况，恢复包不会困难，也并非要回归 npm。</p>
+<h2 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h2><p>也许你了解 Node.js 与 io.js 之间的历史。简单来说：io.js 是 Node.js 一些核心开发者因为项目管理上的分歧而独立出来创建的分支。不同的是，io.js 选择了开放式管理，在不到一年的时间时，两支团队达成协议，io.js 被合并回 Node.js，无论对错，它为 Node.js 带来了相当多不错的功能。</p>
+<p>我看到 npm 与 Yarn 和它们有着类似的模式，不过 Yarn 不是分支，它解决了 npm 的一些缺陷。如果 npm 从中学到东西并邀请 Facebook，Google 或其它 Yarn 的贡献者们来一起提升 npm 不是很酷吗？虽然言之过早，但我期待它会发生。</p>
+<p>无论哪种结果，Yarn 前途一片光明。社区得到别人对新工具的赞扬后似乎很兴奋，不幸的是，社区并没有提供路线图，所以我不确定 Yarn 是否为我们准备了其它惊喜。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>相比 npm 的默认配置，Yarn 获得不少赞同。我们可以方便生成锁文件，安装包时非常迅速并且他们会自动添加进 <code>package.json</code>，同时安装与使用 Yarn 的影响也很小，你可以直接在一个项目上尝试看它是否可以工作，这使得 Yarn 可以完美替代 npm。</p>
+<p>我绝对推荐在一个项目中尽早使用 Yarn，如果你对安装和使用新软件持谨慎态度，可以等待几个月。毕竟 npm 久经考验，它在软件开发领域也有存在的价值。</p>
+<p>使用你正确等待 npm 完成包的安装，也许这是阅读<a href="https://yarnpkg.com/en/docs/migrating-from-npm" target="_blank" rel="external">迁移指南</a>的最佳时刻 ;)</p>
+<p>你怎么想呢？你是否已经在使用 Yarn？你是否将要尝试？或者这只是一个已经支离破碎的生态系统的进一步破碎？请在下面评论区留下你的观点。</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+
+<div class="ds-share" data-thread-key="civxlk6no0003x907czsh2whf" data-title="Yarn vs npm: 你需要知道的一切" data-images="https://99team.github.io/post/yarn-vs-npm-everything-you-need-to-know/yarn.jpg" data-content="Yarn 是 Facebook, Google, Exponent 和 Tilde 开发的一款新的 JavaScript 包管理工具。就像我们可以从官方文档了解那样，它的目的是解决这些团队使用 npm 面临的少数问题，即：
+
+安装的时候无法保证速度/一致性
+安全问题，因为 npm 安装时允许运行代码
+
+但请不要惊慌！它并没有试图完全取代 npm。Yarn 同样是一个从 npm 注册源获取模块的新的" data-url="https://99team.github.io/post/yarn-vs-npm-everything-you-need-to-know/">
+    <div class="ds-share-inline">
+        <ul  class="ds-share-icons-16">
+            <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+            <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+            <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+            <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+            <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+        </ul>
+        <div class="ds-share-icons-more">
+        </div>
+    </div>
+</div>
+
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div class="ds-thread" data-thread-key="post/yarn-vs-npm-everything-you-need-to-know/" data-title="Yarn vs npm: 你需要知道的一切" data-url="https://99team.github.io/post/yarn-vs-npm-everything-you-need-to-know/"></div>
+    <style>
+        #ds-thread #ds-reset .ds-textarea-wrapper {
+            background: none;
+        }
+        #ds-reset .ds-avatar img {
+            box-shadow: none;
+        }
+        #ds-reset .ds-gradient-bg {
+            background: #f7f7f7;
+        }
+        #ds-thread #ds-reset li.ds-tab a {
+            border-radius: 3px;
+        }
+        #ds-thread #ds-reset .ds-post-button {
+            color: white;
+            border: none;
+            box-shadow: none;
+            background: #d32;
+            text-shadow: none;
+            font-weight: normal;
+            font-family: 'Microsoft Yahei';
+        }
+        #ds-thread #ds-reset .ds-post-button:hover {
+            color: white;
+            background: #DE594C;
+        }
+        #ds-thread #ds-reset .ds-post-button:active {
+            background: #d32;
+        }
+        #ds-smilies-tooltip ul.ds-smilies-tabs li a.ds-current {
+            color: white;
+            background: #d32;
+            box-shadow: none;
+            text-shadow: none;
+            font-weight: normal;
+        }
+    </style>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我们 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/99team" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/atom.xml" target="_blank">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/post/how-to-write-javascript-code-for-compatible-browsers-and-node/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            如何写兼容浏览器和Node.js环境的Javascript代码
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/post/create-a-3d-panorama-image-with-a-frame/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">使用 A-Frame 创建 3D 全景图</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/how-to-write-javascript-code-for-compatible-browsers-and-node/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/web开发/">Web开发</a></p>
+                            <p class="item-title"><a href="/post/how-to-write-javascript-code-for-compatible-browsers-and-node/" class="title">如何写兼容浏览器和Node.js环境的Javascript代码</a></p>
+                            <p class="item-date"><time datetime="2016-11-08T12:21:20.000Z" itemprop="datePublished">2016-11-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/yarn-vs-npm-everything-you-need-to-know/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/post/yarn-vs-npm-everything-you-need-to-know/yarn.jpg)" alt="Yarn vs npm: 你需要知道的一切" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/优秀译文/">优秀译文</a></p>
+                            <p class="item-title"><a href="/post/yarn-vs-npm-everything-you-need-to-know/" class="title">Yarn vs npm: 你需要知道的一切</a></p>
+                            <p class="item-date"><time datetime="2016-10-24T11:42:38.000Z" itemprop="datePublished">2016-10-24</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/create-a-3d-panorama-image-with-a-frame/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/post/create-a-3d-panorama-image-with-a-frame/aframe.png)" alt="使用 A-Frame 创建 3D 全景图" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/优秀译文/">优秀译文</a></p>
+                            <p class="item-title"><a href="/post/create-a-3d-panorama-image-with-a-frame/" class="title">使用 A-Frame 创建 3D 全景图</a></p>
+                            <p class="item-date"><time datetime="2016-10-22T10:11:28.000Z" itemprop="datePublished">2016-10-22</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/web开发/">Web开发</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/优秀译文/">优秀译文</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://f2e.tming.net.cn/">99知识平台</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://www.nd.com.cn/">网龙网络公司</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <p>&copy; 2016 99Team</p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'99knowledge'};
+    (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>使用 A-Frame 创建 3D 全景图 | 99Team</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="" />
+    
+    <meta name="description" content="在 Mozilla 工作的五年里我见过许多很棒的项目。它们有的很受欢迎，有的很小众，但它们始终没有激起我与 MozVR 团队做 WebVR 和 A-Frame 项目的热情。
+A-Frame 是一个致力于成为“构建 Web 虚拟现实的模块”，一个使用标记语言 或 JavaScript 在浏览器中创建 VR 体验的库。迫不急待的想使用这个项目就让我们从简单的示例开始：创建一个交互式的全景图比如这个!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 A-Frame 创建 3D 全景图">
+<meta property="og:url" content="https://99team.github.io/post/create-a-3d-panorama-image-with-a-frame/index.html">
+<meta property="og:site_name" content="99Team">
+<meta property="og:description" content="在 Mozilla 工作的五年里我见过许多很棒的项目。它们有的很受欢迎，有的很小众，但它们始终没有激起我与 MozVR 团队做 WebVR 和 A-Frame 项目的热情。
+A-Frame 是一个致力于成为“构建 Web 虚拟现实的模块”，一个使用标记语言 或 JavaScript 在浏览器中创建 VR 体验的库。迫不急待的想使用这个项目就让我们从简单的示例开始：创建一个交互式的全景图比如这个!">
+<meta property="og:image" content="https://99team.github.io/post/create-a-3d-panorama-image-with-a-frame/aframe.png">
+<meta property="og:updated_time" content="2016-11-25T09:39:22.240Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 A-Frame 创建 3D 全景图">
+<meta name="twitter:description" content="在 Mozilla 工作的五年里我见过许多很棒的项目。它们有的很受欢迎，有的很小众，但它们始终没有激起我与 MozVR 团队做 WebVR 和 A-Frame 项目的热情。
+A-Frame 是一个致力于成为“构建 Web 虚拟现实的模块”，一个使用标记语言 或 JavaScript 在浏览器中创建 VR 体验的库。迫不急待的想使用这个项目就让我们从简单的示例开始：创建一个交互式的全景图比如这个!">
+<meta name="twitter:image" content="https://99team.github.io/post/create-a-3d-panorama-image-with-a-frame/aframe.png">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="99Team" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.0.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?cb9af96e6e2fed8bd03189163e3a47b5";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">99Team</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首页</a>
+                                </li>
+                            
+                                        <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/web开发/">Web开发</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/优秀译文/">优秀译文</a></li></ul>
+                                    
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/优秀译文/">优秀译文</a>
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-create-a-3d-panorama-image-with-a-frame" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        使用 A-Frame 创建 3D 全景图
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-subtitle">
+                本文由<span>米粒</span>发表于 
+                <a href="/post/create-a-3d-panorama-image-with-a-frame/" class="article-date">
+    <time datetime="2016-10-22T10:11:28.000Z" itemprop="datePublished">2016-10-22</time>
+</a>
+                
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            <img src="/post/create-a-3d-panorama-image-with-a-frame/aframe.png" alt="A-Frame" title="A-Frame">
+<p>在 Mozilla 工作的五年里我见过许多很棒的项目。它们有的很受欢迎，有的很小众，但它们始终没有激起我与 MozVR 团队做 WebVR 和 <a href="https://aframe.io" target="_blank" rel="external">A-Frame</a> 项目的热情。</p>
+<p>A-Frame 是一个致力于成为“构建 Web 虚拟现实的模块”，一个使用标记语言 或 JavaScript 在浏览器中创建 VR 体验的库。迫不急待的想使用这个项目就让我们从简单的示例开始：创建一个交互式的全景图比如<a href="https://aframe.io/examples/showcase/sky/" target="_blank" rel="external">这个</a>!</p>
+<p><a href="https://davidwalsh.name/demo/3d-panorama-image.html" target="_blank" rel="external">查看DEMO</a></p>
+<h2 id="获取-3D-图片"><a href="#获取-3D-图片" class="headerlink" title="获取 3D 图片"></a>获取 3D 图片</h2><p>获取一张符合全景效果要求（公认的柱状全景格式）的 3D 图片的最简单方式就是使用手机。Dan Zajdband 的 <a href="https://source.opennews.org/en-US/articles/virtual-reality-rest-us/" target="_blank" rel="external">Guri VR: 我们其它人的虚拟现实</a>识别 APP iOS版(<a href="https://itunes.apple.com/app/id904418768?mt=8240" target="_blank" rel="external">谷歌街景</a>) 和安桌版<br>(<a href="https://support.google.com/googlecamera/?hl=en#2839084" target="_blank" rel="external">Photo Sphere</a> 或 <a href="https://play.google.com/store/apps/details?id=com.google.vr.cyclops&amp;hl=en" target="_blank" rel="external">Cardboard Camera</a>)。Dan 的这篇优秀文章还提到 Flickr 上的 <a href="https://www.flickr.com/groups/equirectangular/" target="_blank" rel="external">Equirectangular 群组</a>，如果你想简单的获取一张图片来实验的话。</p>
+<p>使用手机来获取一张可用图像可能是个不小的挑战 – 你要保证在旋转手机的时候非常平稳来避免边缘出现锯齿。</p>
+<p><em>友情提示：案例中我为 A-Frame 提供了一个样品图像，因为谷歌街景的图片大小有 10M，直接将这么大的图片展现出来就太禽兽了。如果你想看我用 GSV 应用制作的图片<a href="https://davidwalsh.name/demo/3d-panorama-circle.jpg" target="_blank" rel="external">点击这里</a>。这张图片的视角是我站在生活中小路上的中间。</em></p>
+<h2 id="使用-A-Frame-创建全景效果"><a href="#使用-A-Frame-创建全景效果" class="headerlink" title="使用 A-Frame 创建全景效果"></a>使用 A-Frame 创建全景效果</h2><p>不管信不信，获取一张好的图片是最困难的部分，因为 A-Frame 可以非常容易的将图片转成 3D 可视化。<br><code>A-Frame 元素可以用来创建全景效果</code>:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;a-scene&gt;</div><div class="line">&lt;a-sky src=&quot;https://davidwalsh.name/demo/3d-image.jpg&quot; rotation=&quot;0 -130 0&quot;&gt;&lt;/a-sky&gt;</div><div class="line">&lt;/a-scene&gt;</div></pre></td></tr></table></figure>
+<p>以上代码是 A-Frame 常用语法（由HTML编写）；你也可以使用 JavaScript 来创建元素：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">// 创建场景</div><div class="line">var scene = document.createElement(&apos;a-scene&apos;);</div><div class="line"></div><div class="line">// 创建天空</div><div class="line">var sky = document.createElement(&apos;a-sky&apos;);</div><div class="line">sky.src = &apos;3d-image.jpg&apos;;</div><div class="line">sky.setAttribute(&apos;rotation&apos;, &#123; x: 0, y: -130, y: 0 &#125;);</div><div class="line"></div><div class="line">// 插入到页面中</div><div class="line">scene.appendChild(sky);</div><div class="line">document.body.appendChild(scene);</div></pre></td></tr></table></figure>
+<p><a href="https://aframe.io/docs/0.2.0/components/rotation.html" target="_blank" rel="external"><code>rotation</code> 属性</a> 用来接收空间分隔 <code>x</code>, <code>y</code>, 和 <code>z</code> 轴旋转值；你可以使用它们来自定义视角位置。</p>
+<p>A-Frame 可以让你点击、固定以及拖动组件来旋转图像。你也可以点击 VR 眼镜按钮在手机（cardboard maWebVR 所有网页 – 这是下一件大事！完成一个不错的装饰！）或支持 WebVR 的浏览器上以 3D 模式查看图像。</p>
+<p><a href="https://davidwalsh.name/demo/3d-panorama-image.html" target="_blank" rel="external">查看DEMO</a></p>
+<h2 id="A-Frame-简单创建-3D！"><a href="#A-Frame-简单创建-3D！" class="headerlink" title="A-Frame 简单创建 3D！"></a>A-Frame 简单创建 3D！</h2><p>当我说获取照片是困难的部分时并没有夸张；因为使用 A-Frame 来创建 3D 全景效果时仅需要使用少量的标记语言。创建全景图是一个流行的使用案例，但该效果仅仅是 A-Frame 的冰山一角。还想了解 A-Frame 可以做什么？查看更多案例请访问 <a href="https://aframe.io/" target="_blank" rel="external">A-Frame 官网</a> 以及 期待在所有网页中看到更多关于 WebVR 的事 – 这是下一件大事！</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+
+<div class="ds-share" data-thread-key="civxlk6n50000x907s7j39b5h" data-title="使用 A-Frame 创建 3D 全景图" data-images="https://99team.github.io/post/create-a-3d-panorama-image-with-a-frame/aframe.png" data-content="
+在 Mozilla 工作的五年里我见过许多很棒的项目。它们有的很受欢迎，有的很小众，但它们始终没有激起我与 MozVR 团队做 WebVR 和 A-Frame 项目的热情。
+A-Frame 是一个致力于成为“构建 Web 虚拟现实的模块”，一个使用标记语言 或 JavaScript 在浏览器中创建 VR 体验的库。迫不急待的想使用这个项目就让我们从简单的示例开始：创建一个交互式的全景图比如这个!" data-url="https://99team.github.io/post/create-a-3d-panorama-image-with-a-frame/">
+    <div class="ds-share-inline">
+        <ul  class="ds-share-icons-16">
+            <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+            <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+            <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+            <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+            <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+        </ul>
+        <div class="ds-share-icons-more">
+        </div>
+    </div>
+</div>
+
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div class="ds-thread" data-thread-key="post/create-a-3d-panorama-image-with-a-frame/" data-title="使用 A-Frame 创建 3D 全景图" data-url="https://99team.github.io/post/create-a-3d-panorama-image-with-a-frame/"></div>
+    <style>
+        #ds-thread #ds-reset .ds-textarea-wrapper {
+            background: none;
+        }
+        #ds-reset .ds-avatar img {
+            box-shadow: none;
+        }
+        #ds-reset .ds-gradient-bg {
+            background: #f7f7f7;
+        }
+        #ds-thread #ds-reset li.ds-tab a {
+            border-radius: 3px;
+        }
+        #ds-thread #ds-reset .ds-post-button {
+            color: white;
+            border: none;
+            box-shadow: none;
+            background: #d32;
+            text-shadow: none;
+            font-weight: normal;
+            font-family: 'Microsoft Yahei';
+        }
+        #ds-thread #ds-reset .ds-post-button:hover {
+            color: white;
+            background: #DE594C;
+        }
+        #ds-thread #ds-reset .ds-post-button:active {
+            background: #d32;
+        }
+        #ds-smilies-tooltip ul.ds-smilies-tabs li a.ds-current {
+            color: white;
+            background: #d32;
+            box-shadow: none;
+            text-shadow: none;
+            font-weight: normal;
+        }
+    </style>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我们 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/99team" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/atom.xml" target="_blank">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/post/yarn-vs-npm-everything-you-need-to-know/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Yarn vs npm: 你需要知道的一切
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/how-to-write-javascript-code-for-compatible-browsers-and-node/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/web开发/">Web开发</a></p>
+                            <p class="item-title"><a href="/post/how-to-write-javascript-code-for-compatible-browsers-and-node/" class="title">如何写兼容浏览器和Node.js环境的Javascript代码</a></p>
+                            <p class="item-date"><time datetime="2016-11-08T12:21:20.000Z" itemprop="datePublished">2016-11-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/yarn-vs-npm-everything-you-need-to-know/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/post/yarn-vs-npm-everything-you-need-to-know/yarn.jpg)" alt="Yarn vs npm: 你需要知道的一切" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/优秀译文/">优秀译文</a></p>
+                            <p class="item-title"><a href="/post/yarn-vs-npm-everything-you-need-to-know/" class="title">Yarn vs npm: 你需要知道的一切</a></p>
+                            <p class="item-date"><time datetime="2016-10-24T11:42:38.000Z" itemprop="datePublished">2016-10-24</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/create-a-3d-panorama-image-with-a-frame/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/post/create-a-3d-panorama-image-with-a-frame/aframe.png)" alt="使用 A-Frame 创建 3D 全景图" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/优秀译文/">优秀译文</a></p>
+                            <p class="item-title"><a href="/post/create-a-3d-panorama-image-with-a-frame/" class="title">使用 A-Frame 创建 3D 全景图</a></p>
+                            <p class="item-date"><time datetime="2016-10-22T10:11:28.000Z" itemprop="datePublished">2016-10-22</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/web开发/">Web开发</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/优秀译文/">优秀译文</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://f2e.tming.net.cn/">99知识平台</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://www.nd.com.cn/">网龙网络公司</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <p>&copy; 2016 99Team</p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'99knowledge'};
+    (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

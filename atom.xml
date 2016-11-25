@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>99Team</title>
+  <subtitle>99Team</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://99team.github.io/"/>
+  <updated>2016-11-25T09:39:22.240Z</updated>
+  <id>https://99team.github.io/</id>
+  
+  <author>
+    <name>99Team</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何写兼容浏览器和Node.js环境的Javascript代码</title>
+    <link href="https://99team.github.io/post/how-to-write-javascript-code-for-compatible-browsers-and-node/"/>
+    <id>https://99team.github.io/post/how-to-write-javascript-code-for-compatible-browsers-and-node/</id>
+    <published>2016-11-08T12:21:20.000Z</published>
+    <updated>2016-11-25T09:39:22.240Z</updated>
+    
+    <content type="html"><![CDATA[<p>如果有打开过jQuery的源码（从1.11及以后），或者Vue.js、React.js的源码，都会在文件的前面看见这样一段代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">( <span class="function"><span class="keyword">function</span>(<span class="params"> global, factory </span>) </span>&#123;</div><div class="line"><span class="meta"></span></div><div class="line">	"use strict";</div><div class="line"></div><div class="line">	<span class="keyword">if</span> ( <span class="keyword">typeof</span> <span class="built_in">module</span> === <span class="string">"object"</span> &amp;&amp; <span class="keyword">typeof</span> <span class="built_in">module</span>.exports === <span class="string">"object"</span> ) &#123;</div><div class="line"></div><div class="line">		<span class="comment">// For CommonJS and CommonJS-like environments where a proper `window`</span></div><div class="line">		<span class="comment">// is present, execute the factory and get jQuery.</span></div><div class="line">		<span class="comment">// For environments that do not have a `window` with a `document`</span></div><div class="line">		<span class="comment">// (such as Node.js), expose a factory as module.exports.</span></div><div class="line">		<span class="comment">// This accentuates the need for the creation of a real `window`.</span></div><div class="line">		<span class="comment">// e.g. var jQuery = require("jquery")(window);</span></div><div class="line">		<span class="comment">// See ticket #14549 for more info.</span></div><div class="line">		<span class="built_in">module</span>.exports = global.document ?</div><div class="line">			factory( global, <span class="literal">true</span> ) :</div><div class="line">			<span class="function"><span class="keyword">function</span>(<span class="params"> w </span>) </span>&#123;</div><div class="line">				<span class="keyword">if</span> ( !w.document ) &#123;</div><div class="line">					<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>( <span class="string">"jQuery requires a window with a document"</span> );</div><div class="line">				&#125;</div><div class="line">				<span class="keyword">return</span> factory( w );</div><div class="line">			&#125;;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		factory( global );</div><div class="line">	&#125;</div><div class="line"></div><div class="line"><span class="comment">// Pass this if window is not defined yet</span></div><div class="line">&#125; )( <span class="keyword">typeof</span> <span class="built_in">window</span> !== <span class="string">"undefined"</span> ? <span class="built_in">window</span> : <span class="keyword">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params"> window, noGlobal </span>) </span>&#123;</div><div class="line">  <span class="comment">//...</span></div></pre></td></tr></table></figure>
+<p>以上是jQuery V3.1.0的一段代码。如果自己平时写的都是在浏览器上运行的js代码，又没有接触过Node.js的，可能就不知道 ‘module.exports’ 是什么，为什么要加以判断了。如果有接触过Node，就知道 ‘module.exports’ 其实就是一个js文件的出口，相当于ES6的export。</p>
+<p>现在。从头介绍如何写一个兼容浏览器和Node环境的js代码。假设这个js文件名为export.js。</p>
+<p>首页，为了避免污染全局作用域，立即执行函数是必须的。这个函数的参数，就像上面的代码那样，也传入一个函数吧。</p>
+<p>export.js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">factory</span>) </span>&#123;</div><div class="line">  <span class="comment">//判断宿主环境</span></div><div class="line">&#125;(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">//代码的核心</span></div><div class="line">&#125;));</div></pre></td></tr></table></figure>
+<p>接下来，就是判断宿主环境。在浏览器环境下，window这个变量是无需创建，自动生成的；在Node环境下，module同理。export.js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">factory</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span>) &#123;</div><div class="line">    <span class="built_in">module</span>.exports = factory();</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    factory();</div><div class="line">  &#125;</div><div class="line">&#125;(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> vue = <span class="number">30</span>;</div><div class="line">  <span class="comment">//...</span></div><div class="line">&#125;));</div></pre></td></tr></table></figure>
+<p>判断了宿主环境后，现在我们需要获得已经定义了的变量vue。在浏览器环境下，用形如</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="built_in">window</span>.vue = vue;</div></pre></td></tr></table></figure>
+<p>这样的语句让vue这个变量变成全局的；而在node环境下，export.js用</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">return</span> vue;</div></pre></td></tr></table></figure>
+<p>而需要用到这个变量的文件加上这么一句：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> vue = <span class="built_in">require</span>(<span class="string">'./export.js'</span>);</div></pre></td></tr></table></figure>
+<p>这样的语句获得vue这个变量。export.js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">factory</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span>) &#123;</div><div class="line">    <span class="built_in">module</span>.exports = factory();</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    factory();</div><div class="line">  &#125;</div><div class="line">&#125;(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> vue = <span class="number">30</span>;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">window</span> !== <span class="string">'undefined'</span>) &#123;</div><div class="line">    <span class="built_in">window</span>.vue = vue;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">return</span> vue;</div><div class="line">  &#125;</div><div class="line">&#125;));</div></pre></td></tr></table></figure>
+<p>其实，在看了Vue.js的这部分代码后，发现了一个更便捷的方式，就是把vue这个全局变量放在function(factory)里面，这样，下面只要写一个return vue; 就可以了。export.js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">factory</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span>) &#123;</div><div class="line">    <span class="built_in">module</span>.exports = factory();</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">window</span>.vue = factory();</div><div class="line">  &#125;</div><div class="line">&#125;(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> vue = <span class="number">30</span>;</div><div class="line">  <span class="keyword">return</span> vue;</div><div class="line">&#125;));</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;如果有打开过jQuery的源码（从1.11及以后），或者Vue.js、React.js的源码，都会在文件的前面看见这样一段代码：&lt;/p&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pr
+    
+    </summary>
+    
+      <category term="Web开发" scheme="https://99team.github.io/categories/web%E5%BC%80%E5%8F%91/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Yarn vs npm: 你需要知道的一切</title>
+    <link href="https://99team.github.io/post/yarn-vs-npm-everything-you-need-to-know/"/>
+    <id>https://99team.github.io/post/yarn-vs-npm-everything-you-need-to-know/</id>
+    <published>2016-10-24T11:42:38.000Z</published>
+    <updated>2016-11-25T09:39:22.240Z</updated>
+    
+    <content type="html"><![CDATA[<p>Yarn 是 Facebook, Google, Exponent 和 Tilde 开发的一款新的 JavaScript 包管理工具。就像我们可以从<a href="https://code.facebook.com/posts/1840075619545360" target="_blank" rel="external">官方文档</a>了解那样，它的目的是解决这些团队使用 npm 面临的少数问题，即：</p>
+<ul>
+<li>安装的时候无法保证速度/一致性</li>
+<li>安全问题，因为 npm 安装时允许运行代码</li>
+</ul>
+<p>但请不要惊慌！它并没有试图完全取代 npm。Yarn 同样是一个从 npm 注册源获取模块的新的 CLI 客户端。注册的方式不会有任何变化 —— 你同样可以正常获取与发布包。</p>
+<p>是否每个人现在都要跳上 Yarn 这辆被大肆宣传的列车？又或者你根本没机会碰到 npm 的这些问题。本篇文章将会比较 npm 与 Yarn，最终你可以决定哪款更适合你。</p>
+<img src="/post/yarn-vs-npm-everything-you-need-to-know/yarn.jpg" alt="Yarn logo" title="Yarn logo">
+<h2 id="Yarn-vs-npm-功能差异"><a href="#Yarn-vs-npm-功能差异" class="headerlink" title="Yarn vs npm: 功能差异"></a>Yarn vs npm: 功能差异</h2><p>乍一看 Yarn 与 npm 很类似，但通过引擎的对比就能察觉 Yarn 的不同。</p>
+<h3 id="yarn-lock-文件"><a href="#yarn-lock-文件" class="headerlink" title="yarn.lock 文件"></a>yarn.lock 文件</h3><p>npm 和 Yarn 都使用 <code>package.json</code> 来跟踪项目的依赖，版本号并非一直准确，因为你可以定义版本号范围，这样你可以选择一个主版本和次要版本的包，但让 npm 安装最新的补丁也许可以修改一些 bug。</p>
+<p>理想状态下使用<a href="http://semver.org/" target="_blank" rel="external">语义化版本</a>发布补丁不会包含大的变化，但不幸的是这必非真理。npm 的这种策略可能导致两台拥有相同 <code>package.json</code> 文件的机子安装了不同版本的包，这可能导致一些错误。</p>
+<p>为了避免包版本的错误匹配，一个确定的安装版本被固定在一个锁文件中。每次模块被添加时，Yarn 就会创建（或更新）<code>yarn.lock</code> 文件，这样你就可以保证其它机子也安装相同版本的包，同时包含了 <code>package.json</code> 中定义的一系列允许的版本。</p>
+<p>在 npm 中同样可以使用 <code>npm shrinkwrap</code> 命令来生成一个锁文件，这样在使用 <code>npm install</code> 时会在读取 <code>package.json</code> 前先读取这个文件，就像 Yarn 会先读取 <code>yarn.lock</code> 一样。这里的区别是 Yarn 总会自动更新 <code>yarn.lock</code>，而 npm 需要你重新操作。</p>
+<ol>
+<li><p><a href="https://yarnpkg.com/en/docs/configuration#toc-use-yarn-lock-to-pin-your-dependencies" target="_blank" rel="external">yarn.lock 文档</a></p>
+</li>
+<li><p><a href="https://docs.npmjs.com/cli/shrinkwrap" target="_blank" rel="external">npm shrinkwrap 文档</a></p>
+</li>
+</ol>
+<h3 id="并行安装"><a href="#并行安装" class="headerlink" title="并行安装"></a>并行安装</h3><p>每当 npm 或 Yarn 需要安装一个包时，它会进行一系列的任务。在 npm 中这些任务是按包的顺序一个个执行，这意味着必须等待上一个包被完整安装才会进入下一个；Yarn 则并行的执行这些任务，提高了性能。</p>
+<p>为了比较，我在没有使用 shrinkwrap/yarn.lock 的方式以及清理了缓存下使用 npm 与 Yarn 安装 <a href="https://www.npmjs.com/package/express" target="_blank" rel="external">express</a>，总共安装了 42 个依赖。</p>
+<ul>
+<li>npm: 9 s</li>
+<li>Yarn: 1.37 s</li>
+</ul>
+<p>我无法相信自己的眼睛，所以重复以上步骤，但得到相同结果。接着我安装 <a href="https://www.npmjs.com/package/gulp" target="_blank" rel="external">gulp</a> 进行测试，总共安装了 195 个依赖。</p>
+<ul>
+<li>npm: 11 s</li>
+<li>Yarn: 7.81 s</li>
+</ul>
+<p>似乎根据所需要安装的包的数量而有所不同，但 Yarn 依旧比较快。</p>
+<h3 id="清晰的输出"><a href="#清晰的输出" class="headerlink" title="清晰的输出"></a>清晰的输出</h3><p>npm 默认情况下非常冗余，例如使用 <code>npm install</code> 时它会递归列出所有安装的信息；而 Yarn 则一点也不冗余，当可以使用其它命令时，它适当的使用 emojis 表情来减少信息（Windows 除外）。</p>
+<img src="/post/yarn-vs-npm-everything-you-need-to-know/terminal.png" alt="Yarn vs npm: “yarn install” 命令输出截图" title="Yarn vs npm: “yarn install” 命令输出截图">
+<h2 id="Yarn-vs-npm-CLI-的差异"><a href="#Yarn-vs-npm-CLI-的差异" class="headerlink" title="Yarn vs npm: CLI 的差异"></a>Yarn vs npm: CLI 的差异</h2><p>除了一些功能差异，Yarn 命令也存在一些区别。例如移除或修改了一些 npm 命令以及添加了几个有趣的命令。</p>
+<h3 id="yarn-global"><a href="#yarn-global" class="headerlink" title="yarn global"></a>yarn global</h3><p>不像 npm 添加 <code>-g</code> 或 <code>--global</code> 可以进行全局安装，Yarn 使用的是 <code>global</code> 前缀。不过与 npm 类似，项目依赖不推荐全局安装。</p>
+<p><code>global</code> 前缀只能用于 <code>yarn add</code>, <code>yarn bin</code>, <code>yarn ls</code> 和 <code>yarn remove</code>，除 <code>yarn add</code> 外，这些命令都和 npm 等效。</p>
+<ol>
+<li><a href="https://yarnpkg.com/en/docs/cli/global" target="_blank" rel="external">yarn global 文档</a></li>
+</ol>
+<h3 id="yarn-install"><a href="#yarn-install" class="headerlink" title="yarn install"></a>yarn install</h3><p><code>npm install</code> 命令会根据 <code>package.json</code> 安装依赖以及允许你添加新的模块；<code>yarn install</code> 仅会按 <code>yarn.lock</code> 或 <code>package.json</code> 里面的依赖顺序来安装模块。</p>
+<ol>
+<li><p><a href="https://yarnpkg.com/en/docs/cli/install" target="_blank" rel="external">yarn install 文档</a></p>
+</li>
+<li><p><a href="https://docs.npmjs.com/cli/install" target="_blank" rel="external">npm install 文档</a></p>
+</li>
+</ol>
+<h3 id="yarn-add-–dev"><a href="#yarn-add-–dev" class="headerlink" title="yarn add  [–dev]"></a>yarn add  [–dev]</h3><p>与 <code>npm install</code> 类似，<code>yarn add</code> 允许你添加与安装模块，就像命令的名称一样，添加依赖意味着也会算定将依赖写入 <code>package.json</code>，类似 npm 的 <code>--save</code> 参数；Yarn 的 <code>--dev</code> 参数则是添加开发依赖，类似 npm 的 <code>--save-dev</code> 参数。</p>
+<ol>
+<li><p><a href="https://yarnpkg.com/en/docs/cli/add" target="_blank" rel="external">yarn add 文档</a></p>
+</li>
+<li><p><a href="https://docs.npmjs.com/cli/install" target="_blank" rel="external">npm install 文档</a></p>
+</li>
+</ol>
+<h3 id="yarn-licenses-ls-generate-disclaimer"><a href="#yarn-licenses-ls-generate-disclaimer" class="headerlink" title="yarn licenses [ls|generate-disclaimer]"></a>yarn licenses [ls|generate-disclaimer]</h3><p>npm 没有类似命令来方便编写自己的包。<code>yarn licenses ls</code> 列出所有已安装包的许可协议。<code>yarn licenses generate-disclaimer</code> 生成包含已安装包许可协议的免责声明。某些协议要求使用者必须在项目中包含该协议，这时候该命令将变得非常好用。</p>
+<ol>
+<li><a href="https://yarnpkg.com/en/docs/cli/licenses" target="_blank" rel="external">yarn licenses 文档</a></li>
+</ol>
+<h3 id="yarn-why"><a href="#yarn-why" class="headerlink" title="yarn why"></a>yarn why</h3><p>该命令会查找依赖关系并找出为什么会将某些包安装在你的项目中。也许你明确为什么添加，也许它只是你安装包中的一个依赖，<code>yarn why</code> 可以帮你弄找出。</p>
+<ol>
+<li><a href="https://yarnpkg.com/en/docs/cli/why" target="_blank" rel="external">yarn why 文档</a></li>
+</ol>
+<h3 id="yarn-upgrade"><a href="#yarn-upgrade" class="headerlink" title="yarn upgrade"></a>yarn upgrade</h3><p>该命令会根据符合 <code>package.json</code> 设定的规则而不是 <code>yarn.lock</code> 定义的确切版本来将包更新到最新版本。如果想用 npm 来实现相同目的，可以这样执行：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">rm -rf node_modules</div><div class="line">npm install</div></pre></td></tr></table></figure>
+<p>不要将该命令与 <code>npm update</code> 混淆，它指的是更新到自己的最新版。</p>
+<ol>
+<li><a href="https://yarnpkg.com/en/docs/cli/upgrade" target="_blank" rel="external">yarn upgrade 文档</a></li>
+</ol>
+<h3 id="yarn-generate-lock-entry"><a href="#yarn-generate-lock-entry" class="headerlink" title="yarn generate-lock-entry"></a>yarn generate-lock-entry</h3><p><code>yarn generate-lock-entry</code> 会基于 <code>package.json</code> 设置的依赖生成 <code>yarn.lock</code> 文件，该命令与 <code>npm shrinkwrap</code> 类似，但应该小心使用，因为通过 <code>yarn add</code> 和 <code>yarn upgrade</code> 命令添加或更新依赖时会自动更新生成该锁文件。</p>
+<ol>
+<li><p><a href="https://yarnpkg.com/en/docs/cli/generate-lock-entry" target="_blank" rel="external">yarn generate-lock-entry 文档</a></p>
+</li>
+<li><p><a href="https://docs.npmjs.com/cli/shrinkwrap" target="_blank" rel="external">npm shrinkwrap 文档</a></p>
+</li>
+</ol>
+<h2 id="稳定性与可靠性"><a href="#稳定性与可靠性" class="headerlink" title="稳定性与可靠性"></a>稳定性与可靠性</h2><p>Yarn 被炒得这么火热会不会有问题？它正式发布当天就收到很多<a href="https://github.com/yarnpkg/yarn/issues" target="_blank" rel="external">问题反馈</a>，但官方处理问题的速度极快。这些表明社区正努力开发并修复bug。查看问题反馈的数量和类型可以发现 Yarn 在大多数用户的机子上表现的很稳定，但可能个别机子会有问题。</p>
+<p>请注意虽然一个包管理器可能对你的项目非常重要，但它仅仅只是个工具，如果出了状况，恢复包不会困难，也并非要回归 npm。</p>
+<h2 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h2><p>也许你了解 Node.js 与 io.js 之间的历史。简单来说：io.js 是 Node.js 一些核心开发者因为项目管理上的分歧而独立出来创建的分支。不同的是，io.js 选择了开放式管理，在不到一年的时间时，两支团队达成协议，io.js 被合并回 Node.js，无论对错，它为 Node.js 带来了相当多不错的功能。</p>
+<p>我看到 npm 与 Yarn 和它们有着类似的模式，不过 Yarn 不是分支，它解决了 npm 的一些缺陷。如果 npm 从中学到东西并邀请 Facebook，Google 或其它 Yarn 的贡献者们来一起提升 npm 不是很酷吗？虽然言之过早，但我期待它会发生。</p>
+<p>无论哪种结果，Yarn 前途一片光明。社区得到别人对新工具的赞扬后似乎很兴奋，不幸的是，社区并没有提供路线图，所以我不确定 Yarn 是否为我们准备了其它惊喜。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>相比 npm 的默认配置，Yarn 获得不少赞同。我们可以方便生成锁文件，安装包时非常迅速并且他们会自动添加进 <code>package.json</code>，同时安装与使用 Yarn 的影响也很小，你可以直接在一个项目上尝试看它是否可以工作，这使得 Yarn 可以完美替代 npm。</p>
+<p>我绝对推荐在一个项目中尽早使用 Yarn，如果你对安装和使用新软件持谨慎态度，可以等待几个月。毕竟 npm 久经考验，它在软件开发领域也有存在的价值。</p>
+<p>使用你正确等待 npm 完成包的安装，也许这是阅读<a href="https://yarnpkg.com/en/docs/migrating-from-npm" target="_blank" rel="external">迁移指南</a>的最佳时刻 ;)</p>
+<p>你怎么想呢？你是否已经在使用 Yarn？你是否将要尝试？或者这只是一个已经支离破碎的生态系统的进一步破碎？请在下面评论区留下你的观点。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Yarn 是 Facebook, Google, Exponent 和 Tilde 开发的一款新的 JavaScript 包管理工具。就像我们可以从&lt;a href=&quot;https://code.facebook.com/posts/1840075619545360&quot; targ
+    
+    </summary>
+    
+      <category term="优秀译文" scheme="https://99team.github.io/categories/%E4%BC%98%E7%A7%80%E8%AF%91%E6%96%87/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>使用 A-Frame 创建 3D 全景图</title>
+    <link href="https://99team.github.io/post/create-a-3d-panorama-image-with-a-frame/"/>
+    <id>https://99team.github.io/post/create-a-3d-panorama-image-with-a-frame/</id>
+    <published>2016-10-22T10:11:28.000Z</published>
+    <updated>2016-11-25T09:39:22.240Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/post/create-a-3d-panorama-image-with-a-frame/aframe.png" alt="A-Frame" title="A-Frame">
+<p>在 Mozilla 工作的五年里我见过许多很棒的项目。它们有的很受欢迎，有的很小众，但它们始终没有激起我与 MozVR 团队做 WebVR 和 <a href="https://aframe.io" target="_blank" rel="external">A-Frame</a> 项目的热情。</p>
+<p>A-Frame 是一个致力于成为“构建 Web 虚拟现实的模块”，一个使用标记语言 或 JavaScript 在浏览器中创建 VR 体验的库。迫不急待的想使用这个项目就让我们从简单的示例开始：创建一个交互式的全景图比如<a href="https://aframe.io/examples/showcase/sky/" target="_blank" rel="external">这个</a>!</p>
+<p><a href="https://davidwalsh.name/demo/3d-panorama-image.html" target="_blank" rel="external">查看DEMO</a></p>
+<h2 id="获取-3D-图片"><a href="#获取-3D-图片" class="headerlink" title="获取 3D 图片"></a>获取 3D 图片</h2><p>获取一张符合全景效果要求（公认的柱状全景格式）的 3D 图片的最简单方式就是使用手机。Dan Zajdband 的 <a href="https://source.opennews.org/en-US/articles/virtual-reality-rest-us/" target="_blank" rel="external">Guri VR: 我们其它人的虚拟现实</a>识别 APP iOS版(<a href="https://itunes.apple.com/app/id904418768?mt=8240" target="_blank" rel="external">谷歌街景</a>) 和安桌版<br>(<a href="https://support.google.com/googlecamera/?hl=en#2839084" target="_blank" rel="external">Photo Sphere</a> 或 <a href="https://play.google.com/store/apps/details?id=com.google.vr.cyclops&amp;hl=en" target="_blank" rel="external">Cardboard Camera</a>)。Dan 的这篇优秀文章还提到 Flickr 上的 <a href="https://www.flickr.com/groups/equirectangular/" target="_blank" rel="external">Equirectangular 群组</a>，如果你想简单的获取一张图片来实验的话。</p>
+<p>使用手机来获取一张可用图像可能是个不小的挑战 – 你要保证在旋转手机的时候非常平稳来避免边缘出现锯齿。</p>
+<p><em>友情提示：案例中我为 A-Frame 提供了一个样品图像，因为谷歌街景的图片大小有 10M，直接将这么大的图片展现出来就太禽兽了。如果你想看我用 GSV 应用制作的图片<a href="https://davidwalsh.name/demo/3d-panorama-circle.jpg" target="_blank" rel="external">点击这里</a>。这张图片的视角是我站在生活中小路上的中间。</em></p>
+<h2 id="使用-A-Frame-创建全景效果"><a href="#使用-A-Frame-创建全景效果" class="headerlink" title="使用 A-Frame 创建全景效果"></a>使用 A-Frame 创建全景效果</h2><p>不管信不信，获取一张好的图片是最困难的部分，因为 A-Frame 可以非常容易的将图片转成 3D 可视化。<br><code>A-Frame 元素可以用来创建全景效果</code>:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&lt;a-scene&gt;</div><div class="line">&lt;a-sky src=&quot;https://davidwalsh.name/demo/3d-image.jpg&quot; rotation=&quot;0 -130 0&quot;&gt;&lt;/a-sky&gt;</div><div class="line">&lt;/a-scene&gt;</div></pre></td></tr></table></figure>
+<p>以上代码是 A-Frame 常用语法（由HTML编写）；你也可以使用 JavaScript 来创建元素：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">// 创建场景</div><div class="line">var scene = document.createElement(&apos;a-scene&apos;);</div><div class="line"></div><div class="line">// 创建天空</div><div class="line">var sky = document.createElement(&apos;a-sky&apos;);</div><div class="line">sky.src = &apos;3d-image.jpg&apos;;</div><div class="line">sky.setAttribute(&apos;rotation&apos;, &#123; x: 0, y: -130, y: 0 &#125;);</div><div class="line"></div><div class="line">// 插入到页面中</div><div class="line">scene.appendChild(sky);</div><div class="line">document.body.appendChild(scene);</div></pre></td></tr></table></figure>
+<p><a href="https://aframe.io/docs/0.2.0/components/rotation.html" target="_blank" rel="external"><code>rotation</code> 属性</a> 用来接收空间分隔 <code>x</code>, <code>y</code>, 和 <code>z</code> 轴旋转值；你可以使用它们来自定义视角位置。</p>
+<p>A-Frame 可以让你点击、固定以及拖动组件来旋转图像。你也可以点击 VR 眼镜按钮在手机（cardboard maWebVR 所有网页 – 这是下一件大事！完成一个不错的装饰！）或支持 WebVR 的浏览器上以 3D 模式查看图像。</p>
+<p><a href="https://davidwalsh.name/demo/3d-panorama-image.html" target="_blank" rel="external">查看DEMO</a></p>
+<h2 id="A-Frame-简单创建-3D！"><a href="#A-Frame-简单创建-3D！" class="headerlink" title="A-Frame 简单创建 3D！"></a>A-Frame 简单创建 3D！</h2><p>当我说获取照片是困难的部分时并没有夸张；因为使用 A-Frame 来创建 3D 全景效果时仅需要使用少量的标记语言。创建全景图是一个流行的使用案例，但该效果仅仅是 A-Frame 的冰山一角。还想了解 A-Frame 可以做什么？查看更多案例请访问 <a href="https://aframe.io/" target="_blank" rel="external">A-Frame 官网</a> 以及 期待在所有网页中看到更多关于 WebVR 的事 – 这是下一件大事！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/post/create-a-3d-panorama-image-with-a-frame/aframe.png&quot; alt=&quot;A-Frame&quot; title=&quot;A-Frame&quot;&gt;
+&lt;p&gt;在 Mozilla 工作的五年里我见过许多很棒的项目。它们有的很受欢迎，有的
+    
+    </summary>
+    
+      <category term="优秀译文" scheme="https://99team.github.io/categories/%E4%BC%98%E7%A7%80%E8%AF%91%E6%96%87/"/>
+    
+    
+  </entry>
+  
+</feed>

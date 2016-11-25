@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>如何写兼容浏览器和Node.js环境的Javascript代码 | 99Team</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="" />
+    
+    <meta name="description" content="如果有打开过jQuery的源码（从1.11及以后），或者Vue.js、React.js的源码，都会在文件的前面看见这样一段代码：
+( function( global, factory ) &amp;#123;	&quot;use strict&quot;;	if ( typeof module === &quot;object&quot; &amp;amp;&amp;amp; typeof module.exports === &quot;object&quot; ) &amp;#12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何写兼容浏览器和Node.js环境的Javascript代码">
+<meta property="og:url" content="https://99team.github.io/post/how-to-write-javascript-code-for-compatible-browsers-and-node/index.html">
+<meta property="og:site_name" content="99Team">
+<meta property="og:description" content="如果有打开过jQuery的源码（从1.11及以后），或者Vue.js、React.js的源码，都会在文件的前面看见这样一段代码：
+( function( global, factory ) &amp;#123;	&quot;use strict&quot;;	if ( typeof module === &quot;object&quot; &amp;amp;&amp;amp; typeof module.exports === &quot;object&quot; ) &amp;#12">
+<meta property="og:updated_time" content="2016-11-25T09:39:22.240Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何写兼容浏览器和Node.js环境的Javascript代码">
+<meta name="twitter:description" content="如果有打开过jQuery的源码（从1.11及以后），或者Vue.js、React.js的源码，都会在文件的前面看见这样一段代码：
+( function( global, factory ) &amp;#123;	&quot;use strict&quot;;	if ( typeof module === &quot;object&quot; &amp;amp;&amp;amp; typeof module.exports === &quot;object&quot; ) &amp;#12">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="99Team" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.0.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?cb9af96e6e2fed8bd03189163e3a47b5";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">99Team</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首页</a>
+                                </li>
+                            
+                                        <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/web开发/">Web开发</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/优秀译文/">优秀译文</a></li></ul>
+                                    
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/web开发/">Web开发</a>
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-how-to-write-javascript-code-for-compatible-browsers-and-node" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        如何写兼容浏览器和Node.js环境的Javascript代码
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-subtitle">
+                本文由<span>林志斌</span>发表于 
+                <a href="/post/how-to-write-javascript-code-for-compatible-browsers-and-node/" class="article-date">
+    <time datetime="2016-11-08T12:21:20.000Z" itemprop="datePublished">2016-11-08</time>
+</a>
+                
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            <p>如果有打开过jQuery的源码（从1.11及以后），或者Vue.js、React.js的源码，都会在文件的前面看见这样一段代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">( <span class="function"><span class="keyword">function</span>(<span class="params"> global, factory </span>) </span>&#123;</div><div class="line"><span class="meta"></span></div><div class="line">	"use strict";</div><div class="line"></div><div class="line">	<span class="keyword">if</span> ( <span class="keyword">typeof</span> <span class="built_in">module</span> === <span class="string">"object"</span> &amp;&amp; <span class="keyword">typeof</span> <span class="built_in">module</span>.exports === <span class="string">"object"</span> ) &#123;</div><div class="line"></div><div class="line">		<span class="comment">// For CommonJS and CommonJS-like environments where a proper `window`</span></div><div class="line">		<span class="comment">// is present, execute the factory and get jQuery.</span></div><div class="line">		<span class="comment">// For environments that do not have a `window` with a `document`</span></div><div class="line">		<span class="comment">// (such as Node.js), expose a factory as module.exports.</span></div><div class="line">		<span class="comment">// This accentuates the need for the creation of a real `window`.</span></div><div class="line">		<span class="comment">// e.g. var jQuery = require("jquery")(window);</span></div><div class="line">		<span class="comment">// See ticket #14549 for more info.</span></div><div class="line">		<span class="built_in">module</span>.exports = global.document ?</div><div class="line">			factory( global, <span class="literal">true</span> ) :</div><div class="line">			<span class="function"><span class="keyword">function</span>(<span class="params"> w </span>) </span>&#123;</div><div class="line">				<span class="keyword">if</span> ( !w.document ) &#123;</div><div class="line">					<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>( <span class="string">"jQuery requires a window with a document"</span> );</div><div class="line">				&#125;</div><div class="line">				<span class="keyword">return</span> factory( w );</div><div class="line">			&#125;;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		factory( global );</div><div class="line">	&#125;</div><div class="line"></div><div class="line"><span class="comment">// Pass this if window is not defined yet</span></div><div class="line">&#125; )( <span class="keyword">typeof</span> <span class="built_in">window</span> !== <span class="string">"undefined"</span> ? <span class="built_in">window</span> : <span class="keyword">this</span>, <span class="function"><span class="keyword">function</span>(<span class="params"> window, noGlobal </span>) </span>&#123;</div><div class="line">  <span class="comment">//...</span></div></pre></td></tr></table></figure>
+<p>以上是jQuery V3.1.0的一段代码。如果自己平时写的都是在浏览器上运行的js代码，又没有接触过Node.js的，可能就不知道 ‘module.exports’ 是什么，为什么要加以判断了。如果有接触过Node，就知道 ‘module.exports’ 其实就是一个js文件的出口，相当于ES6的export。</p>
+<p>现在。从头介绍如何写一个兼容浏览器和Node环境的js代码。假设这个js文件名为export.js。</p>
+<p>首页，为了避免污染全局作用域，立即执行函数是必须的。这个函数的参数，就像上面的代码那样，也传入一个函数吧。</p>
+<p>export.js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">factory</span>) </span>&#123;</div><div class="line">  <span class="comment">//判断宿主环境</span></div><div class="line">&#125;(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">//代码的核心</span></div><div class="line">&#125;));</div></pre></td></tr></table></figure>
+<p>接下来，就是判断宿主环境。在浏览器环境下，window这个变量是无需创建，自动生成的；在Node环境下，module同理。export.js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">factory</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span>) &#123;</div><div class="line">    <span class="built_in">module</span>.exports = factory();</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    factory();</div><div class="line">  &#125;</div><div class="line">&#125;(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> vue = <span class="number">30</span>;</div><div class="line">  <span class="comment">//...</span></div><div class="line">&#125;));</div></pre></td></tr></table></figure>
+<p>判断了宿主环境后，现在我们需要获得已经定义了的变量vue。在浏览器环境下，用形如</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="built_in">window</span>.vue = vue;</div></pre></td></tr></table></figure>
+<p>这样的语句让vue这个变量变成全局的；而在node环境下，export.js用</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">return</span> vue;</div></pre></td></tr></table></figure>
+<p>而需要用到这个变量的文件加上这么一句：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> vue = <span class="built_in">require</span>(<span class="string">'./export.js'</span>);</div></pre></td></tr></table></figure>
+<p>这样的语句获得vue这个变量。export.js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">factory</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span>) &#123;</div><div class="line">    <span class="built_in">module</span>.exports = factory();</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    factory();</div><div class="line">  &#125;</div><div class="line">&#125;(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> vue = <span class="number">30</span>;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">window</span> !== <span class="string">'undefined'</span>) &#123;</div><div class="line">    <span class="built_in">window</span>.vue = vue;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">return</span> vue;</div><div class="line">  &#125;</div><div class="line">&#125;));</div></pre></td></tr></table></figure>
+<p>其实，在看了Vue.js的这部分代码后，发现了一个更便捷的方式，就是把vue这个全局变量放在function(factory)里面，这样，下面只要写一个return vue; 就可以了。export.js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">factory</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> !== <span class="string">'undefined'</span>) &#123;</div><div class="line">    <span class="built_in">module</span>.exports = factory();</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">window</span>.vue = factory();</div><div class="line">  &#125;</div><div class="line">&#125;(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> vue = <span class="number">30</span>;</div><div class="line">  <span class="keyword">return</span> vue;</div><div class="line">&#125;));</div></pre></td></tr></table></figure>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+
+<div class="ds-share" data-thread-key="civxlk6nd0001x907lt7ctq4r" data-title="如何写兼容浏览器和Node.js环境的Javascript代码"  data-content="如果有打开过jQuery的源码（从1.11及以后），或者Vue.js、React.js的源码，都会在文件的前面看见这样一段代码：
+( function( global, factory ) &#123;	"use strict";	if ( typeof module === "object" &amp;&amp; typeof module.exports === "object" ) &#12" data-url="https://99team.github.io/post/how-to-write-javascript-code-for-compatible-browsers-and-node/">
+    <div class="ds-share-inline">
+        <ul  class="ds-share-icons-16">
+            <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+            <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+            <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+            <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+            <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+        </ul>
+        <div class="ds-share-icons-more">
+        </div>
+    </div>
+</div>
+
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div class="ds-thread" data-thread-key="post/how-to-write-javascript-code-for-compatible-browsers-and-node/" data-title="如何写兼容浏览器和Node.js环境的Javascript代码" data-url="https://99team.github.io/post/how-to-write-javascript-code-for-compatible-browsers-and-node/"></div>
+    <style>
+        #ds-thread #ds-reset .ds-textarea-wrapper {
+            background: none;
+        }
+        #ds-reset .ds-avatar img {
+            box-shadow: none;
+        }
+        #ds-reset .ds-gradient-bg {
+            background: #f7f7f7;
+        }
+        #ds-thread #ds-reset li.ds-tab a {
+            border-radius: 3px;
+        }
+        #ds-thread #ds-reset .ds-post-button {
+            color: white;
+            border: none;
+            box-shadow: none;
+            background: #d32;
+            text-shadow: none;
+            font-weight: normal;
+            font-family: 'Microsoft Yahei';
+        }
+        #ds-thread #ds-reset .ds-post-button:hover {
+            color: white;
+            background: #DE594C;
+        }
+        #ds-thread #ds-reset .ds-post-button:active {
+            background: #d32;
+        }
+        #ds-smilies-tooltip ul.ds-smilies-tabs li a.ds-current {
+            color: white;
+            background: #d32;
+            box-shadow: none;
+            text-shadow: none;
+            font-weight: normal;
+        }
+    </style>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我们 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/99team" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/atom.xml" target="_blank">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/post/yarn-vs-npm-everything-you-need-to-know/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Yarn vs npm: 你需要知道的一切</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/how-to-write-javascript-code-for-compatible-browsers-and-node/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/web开发/">Web开发</a></p>
+                            <p class="item-title"><a href="/post/how-to-write-javascript-code-for-compatible-browsers-and-node/" class="title">如何写兼容浏览器和Node.js环境的Javascript代码</a></p>
+                            <p class="item-date"><time datetime="2016-11-08T12:21:20.000Z" itemprop="datePublished">2016-11-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/yarn-vs-npm-everything-you-need-to-know/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/post/yarn-vs-npm-everything-you-need-to-know/yarn.jpg)" alt="Yarn vs npm: 你需要知道的一切" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/优秀译文/">优秀译文</a></p>
+                            <p class="item-title"><a href="/post/yarn-vs-npm-everything-you-need-to-know/" class="title">Yarn vs npm: 你需要知道的一切</a></p>
+                            <p class="item-date"><time datetime="2016-10-24T11:42:38.000Z" itemprop="datePublished">2016-10-24</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/post/create-a-3d-panorama-image-with-a-frame/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/post/create-a-3d-panorama-image-with-a-frame/aframe.png)" alt="使用 A-Frame 创建 3D 全景图" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/优秀译文/">优秀译文</a></p>
+                            <p class="item-title"><a href="/post/create-a-3d-panorama-image-with-a-frame/" class="title">使用 A-Frame 创建 3D 全景图</a></p>
+                            <p class="item-date"><time datetime="2016-10-22T10:11:28.000Z" itemprop="datePublished">2016-10-22</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/web开发/">Web开发</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/优秀译文/">优秀译文</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://f2e.tming.net.cn/">99知识平台</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://www.nd.com.cn/">网龙网络公司</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <p>&copy; 2016 99Team</p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'99knowledge'};
+    (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
